@@ -2,6 +2,10 @@ name = "hato-status"
 main = "src/worker.ts"
 compatibility_date = "2023-05-15"
 
+kv_namespaces = [
+  { binding = "HATO_STATUS", id = "b5b568b4fc764ec093eeca473f1008ef" }
+]
+
 # Cron Triggers
 # Docs: https://developers.cloudflare.com/workers/platform/triggers/cron-triggers/
 # Configuration: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
