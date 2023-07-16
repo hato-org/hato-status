@@ -60,7 +60,7 @@ export default {
 
 		await env.HATO_STATUS.put(
 			'status',
-			JSON.stringify({ status, updatedAt: new Date(event.timeStamp).toISOString() })
+			JSON.stringify({ status, updatedAt: new Date(event.scheduledTime).toISOString() })
 		);
 	},
 };
