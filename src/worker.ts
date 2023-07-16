@@ -1,11 +1,24 @@
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
+import { app } from './fetch';
 
 export type Bindings = {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
 	// MY_KV_NAMESPACE: KVNamespace;
-	
+
 	HATO_STATUS: KVNamespace;
+};
+
+export type Server = {
+	name: string;
+	url: string;
+};
+
+export type Info = {
+	type: 'maintenance';
+	title: string;
+	description: string;
+	startAt: string;
+	endAt: string;
+	scope: Server['name'][];
 };
 
 const servers = [
@@ -18,13 +31,6 @@ const servers = [
 		url: 'https://api.hato.cf',
 	},
 ];
-
-const app = new Hono<{ Bindings: Bindings }>();
-app.use('*', cors());
-
-app.get('/', async (c) => {
-	return c.json(await c.env.HATO_STATUS.get('status', 'json'));
-});
 
 export default {
 	fetch: app.fetch,
@@ -54,7 +60,7 @@ export default {
 
 		await env.HATO_STATUS.put(
 			'status',
-			JSON.stringify({ status, updatedAt: new Date(event.timeStamp) })
+			JSON.stringify({ status, updatedAt: new Date(event.timeStamp).toISOString() })
 		);
 	},
 };
