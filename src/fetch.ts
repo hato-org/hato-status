@@ -11,7 +11,7 @@ app.get('/', async (c) => {
 
 app
 	.get('/info', async (c) => {
-		return c.json(await c.env.HATO_STATUS.get('info', 'json'));
+		return c.json(await c.env.HATO_STATUS.get('info', 'json') ?? []);
 	})
 	.post(async (c) => {
 		const info = await c.env.HATO_STATUS.get<Info[]>('info', 'json');
