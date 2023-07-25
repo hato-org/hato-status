@@ -26,7 +26,7 @@ export type Info = {
 	scope: Server['name'][];
 };
 
-const servers = [
+export const servers = [
 	{
 		id: 'hato',
 		name: 'Hato',
@@ -81,10 +81,10 @@ export default {
 		if (!new Date(event.scheduledTime).getMinutes())
 			await Promise.all(
 				status.map(async ({ id, status, statusText, time, ok }) =>
-					env.DB.prepare(
-						'INSERT INTO ?1 (status, statusText, responseTime, ok, timestamp) VALUES (?2, ?3, ?4, ?5, ?6, ?7)'
+					await env.DB.prepare(
+						`INSERT INTO status_${id} (status, statusText, responseTime, ok, timestamp) VALUES (?1, ?2, ?3, ?4, ?5)`
 					)
-						.bind(id, status, statusText, time, ok, event.scheduledTime)
+						.bind(status, statusText, time, ok ? 1 : 0, event.scheduledTime)
 						.all()
 				)
 			);

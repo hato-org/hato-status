@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
-import { Bindings, Info } from './worker';
+import { Bindings, Info, servers } from './worker';
 
 export const app = new Hono<{ Bindings: Bindings }>();
 app.use('*', cors());
@@ -28,13 +28,20 @@ app
 app.get('/history', async (c) => {
 	const { id, page } = c.req.query();
 
-	if (!id || !page) throw new HTTPException(400);
+	// 既知のID以外のリクエストを拒否 (SQLインジェクションの防止)
+	const serverId = servers.find((server) => server.id === id)?.id;
+
+	if (!serverId || !page) throw new HTTPException(400);
+
+	const offset = Number(page) - 1;
 
 	return c.json(
-		(await c.env.DB.prepare(
-			`SELECT * FROM status_${id} ORDER BY timestamp DESC LIMIT ?1 OFFSET ?2`
-		)
-			.bind(24, 24 * Number(page))
-			.all()).results
+		(
+			await c.env.DB.prepare(
+				`SELECT * FROM status_${serverId} ORDER BY timestamp DESC LIMIT ?1 OFFSET ?2`
+			)
+				.bind(24, 24 * offset)
+				.all()
+		).results
 	);
 });
