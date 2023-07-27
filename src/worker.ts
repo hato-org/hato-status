@@ -12,20 +12,6 @@ export type Bindings = {
 	DB: D1Database;
 };
 
-export type Server = {
-	name: string;
-	url: string;
-};
-
-export type Info = {
-	type: 'maintenance';
-	title: string;
-	description: string;
-	startAt: string;
-	endAt: string;
-	scope: Server['name'][];
-};
-
 export const servers = [
 	{
 		id: 'hato',

@@ -2,7 +2,8 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { Bindings, Info, servers } from './worker';
+import { Bindings, servers } from './worker';
+import { StatusMaintenance } from './types';
 
 export const app = new Hono<{ Bindings: Bindings }>();
 app.use('*', cors());
@@ -15,7 +16,11 @@ app.get('/servers', (c) => c.json(servers));
 
 app
 	.get('/info', async (c) => {
-		return c.json((await c.env.HATO_STATUS.get('info', 'json')) ?? []);
+		return c.json(
+			(
+				await c.env.HATO_STATUS.get<StatusMaintenance[]>('info', 'json')
+			)?.filter(({ startAt }) => Date.now() < new Date(startAt).getTime()) ?? []
+		);
 	})
 	.post(
 		zValidator(
@@ -30,7 +35,7 @@ app
 			})
 		),
 		async (c) => {
-			const info = await c.env.HATO_STATUS.get<Info[]>('info', 'json');
+			const info = await c.env.HATO_STATUS.get<StatusMaintenance[]>('info', 'json');
 
 			return c.json(
 				await c.env.HATO_STATUS.put(
