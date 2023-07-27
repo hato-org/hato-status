@@ -10,6 +10,8 @@ app.get('/', async (c) => {
 	return c.json(await c.env.HATO_STATUS.get('status', 'json'));
 });
 
+app.get('/servers', (c) => c.json(servers));
+
 app
 	.get('/info', async (c) => {
 		return c.json((await c.env.HATO_STATUS.get('info', 'json')) ?? []);
