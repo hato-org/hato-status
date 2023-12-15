@@ -19,7 +19,7 @@ app
 		return c.json(
 			(
 				await c.env.HATO_STATUS.get<StatusMaintenance[]>('info', 'json')
-			)?.filter(({ startAt }) => Date.now() < new Date(startAt).getTime()) ?? []
+			)?.filter(({ endAt }) => Date.now() < new Date(endAt).getTime()) ?? []
 		);
 	})
 	.post(
