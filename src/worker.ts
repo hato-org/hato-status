@@ -16,12 +16,12 @@ export const servers = [
 	{
 		id: 'hato',
 		name: 'Hato',
-		url: 'https://hato.cf',
+		url: 'https://hato.pages.dev',
 	},
 	{
 		id: 'hato_api',
 		name: 'Hato API',
-		url: 'https://api.hato.cf',
+		url: 'https://yrmpojmxdi.execute-api.ap-northeast-1.amazonaws.com',
 	},
 ];
 
